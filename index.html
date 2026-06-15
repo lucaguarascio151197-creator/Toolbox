@@ -610,6 +610,255 @@
         <div class="modal-content">
             <button class="modal-close" onclick="closePrivacy()">✕</button>
             
+            
+    <script>
+        function openPrivacy() {
+            document.getElementById('privacyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePrivacy() {
+            document.getElementById('privacyModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('privacyModal').addEventListener('click', function(e) {
+            if (e.target === this) closePrivacy();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('privacyModal').classList.contains('active')) {
+                closePrivacy();
+            }
+        });
+
+        function countChars() {
+            var text = document.getElementById('charInput').value;
+            document.getElementById('charCount').textContent = text.length;
+            document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\\s+/).length : 0;
+            var sentences = text.split(/[.!?]+/).filter(function(s) { return s.trim().length > 0; });
+            document.getElementById('sentenceCount').textContent = sentences.length;
+            var words = text.trim() ? text.trim().split(/\\s+/).length : 0;
+            document.getElementById('readTime').textContent = Math.ceil(words / 200);
+        }
+
+        function copyText(elementId) {
+            var el = document.getElementById(elementId);
+            el.select();
+            document.execCommand('copy');
+            el.classList.add('copied');
+            setTimeout(function() { el.classList.remove('copied'); }, 500);
+        }
+
+        function clearText(elementId) {
+            document.getElementById(elementId).value = '';
+            countChars();
+        }
+
+        function generatePassword() {
+            var length = parseInt(document.getElementById('passLength').value) || 16;
+            var includeSymbols = document.getElementById('includeSymbols').checked;
+            var letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            var numbers = '0123456789';
+            var symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            var chars = letters + numbers;
+            if (includeSymbols) chars += symbols;
+            var password = '';
+            for (var i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('passwordResult').textContent = password;
+            updatePasswordStrength(password);
+        }
+
+        function updatePasswordStrength(password) {
+            var score = 0;
+            if (password.length >= 12) score += 2;
+            else if (password.length >= 8) score += 1;
+            if (/[A-Z]/.test(password)) score += 1;
+            if (/[a-z]/.test(password)) score += 1;
+            if (/[0-9]/.test(password)) score += 1;
+            if (/[^A-Za-z0-9]/.test(password)) score += 2;
+            
+            var strengthBar = document.getElementById('strengthBar');
+            var strengthText = document.getElementById('passStrength');
+            
+            if (score <= 2) {
+                strengthBar.style.width = '25%';
+                strengthBar.style.background = '#ff4757';
+                strengthText.textContent = 'Debole';
+                strengthText.style.color = '#ff4757';
+            } else if (score <= 4) {
+                strengthBar.style.width = '50%';
+                strengthBar.style.background = '#ffa502';
+                strengthText.textContent = 'Media';
+                strengthText.style.color = '#ffa502';
+            } else if (score <= 6) {
+                strengthBar.style.width = '75%';
+                strengthBar.style.background = '#7bed9f';
+                strengthText.textContent = 'Forte';
+                strengthText.style.color = '#7bed9f';
+            } else {
+                strengthBar.style.width = '100%';
+                strengthBar.style.background = '#2ed573';
+                strengthText.textContent = 'Molto Forte';
+                strengthText.style.color = '#2ed573';
+            }
+        }
+
+        function copyPassword() {
+            var pass = document.getElementById('passwordResult').textContent;
+            if (pass && pass !== 'Clicca "Genera" 👇') {
+                navigator.clipboard.writeText(pass).then(function() {
+                    var resultEl = document.getElementById('passwordResult');
+                    resultEl.textContent = '✅ Copiata!';
+                    setTimeout(function() { resultEl.textContent = pass; }, 1500);
+                });
+            }
+        }
+
+        function calculatePercent() {
+            var value = parseFloat(document.getElementById('percentValue').value);
+            var percent = parseFloat(document.getElementById('percentAmount').value);
+            if (isNaN(value) || isNaN(percent)) {
+                document.getElementById('percentResult').textContent = 'Inserisci entrambi i valori';
+                return;
+            }
+            var result = (value * percent) / 100;
+            var total = value + result;
+            var discounted = value - result;
+            document.getElementById('percentResult').innerHTML = 
+                percent + '% di ' + value + ' = <strong>' + result.toFixed(2) + '</strong><br>' +
+                '<small>+' + percent + '% = ' + total.toFixed(2) + ' | -' + percent + '% = ' + discounted.toFixed(2) + '</small>';
+        }
+
+        function quickPercent(pct) {
+            document.getElementById('percentAmount').value = pct;
+            calculatePercent();
+        }
+
+        var timerInterval;
+        var timerSeconds = 25 * 60;
+        var isRunning = false;
+
+        function setTimer(minutes) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timerSeconds = minutes * 60;
+            document.getElementById('timerStartBtn').textContent = '▶️ Start';
+            document.getElementById('timerStatus').textContent = 'Pronto!';
+            var presets = document.querySelectorAll('.timer-preset');
+            for (var i = 0; i < presets.length; i++) presets[i].classList.remove('active');
+            event.target.classList.add('active');
+            updateTimerDisplay();
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                document.getElementById('timerStartBtn').textContent = '▶️ Riprendi';
+                document.getElementById('timerStatus').textContent = '⏸️ In pausa';
+            } else {
+                if (timerSeconds <= 0) timerSeconds = 25 * 60;
+                isRunning = true;
+                document.getElementById('timerStartBtn').textContent = '⏸️ Pausa';
+                document.getElementById('timerStatus').textContent = '⏳ In corso...';
+                timerInterval = setInterval(function() {
+                    if (timerSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        document.getElementById('timerStartBtn').textContent = '▶️ Start';
+                        document.getElementById('timerStatus').textContent = '🔔 Tempo scaduto!';
+                        alert('⏰ Tempo scaduto! ☕');
+                        return;
+                    }
+                    timerSeconds--;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timerSeconds = 25 * 60;
+            document.getElementById('timerStartBtn').textContent = '▶️ Start';
+            document.getElementById('timerStatus').textContent = 'Pronto a partire!';
+            var presets = document.querySelectorAll('.timer-preset');
+            for (var i = 0; i < presets.length; i++) presets[i].classList.remove('active');
+            document.querySelector('.timer-preset').classList.add('active');
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            var mins = Math.floor(timerSeconds / 60);
+            var secs = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        }
+
+        function loadShoppingList() {
+            var saved = localStorage.getItem('shoppingList');
+            if (saved) document.getElementById('shoppingList').innerHTML = saved;
+        }
+
+        function saveShoppingList() {
+            localStorage.setItem('shoppingList', document.getElementById('shoppingList').innerHTML);
+        }
+
+        function addShoppingItem() {
+            var input = document.getElementById('shoppingInput');
+            var item = input.value.trim();
+            if (!item) return;
+            var list = document.getElementById('shoppingList');
+            var div = document.createElement('div');
+            div.className = 'shopping-item';
+            div.innerHTML = '<input type="checkbox" onchange="saveShoppingList()">' +
+                '<label>' + item.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label>' +
+                '<button class="delete-btn" onclick="this.parentElement.remove(); saveShoppingList();">×</button>';
+            list.appendChild(div);
+            input.value = '';
+            saveShoppingList();
+        }
+
+        function clearShoppingList() {
+            if (confirm('Svuotare tutta la lista?')) {
+                document.getElementById('shoppingList').innerHTML = '';
+                saveShoppingList();
+            }
+        }
+
+        function convertUnit() {
+            var value = parseFloat(document.getElementById('unitInput').value);
+            var type = document.getElementById('conversionType').value;
+            if (isNaN(value)) {
+                document.getElementById('unitResult').textContent = '-';
+                return;
+            }
+            var result;
+            if (type === 'temp') result = '🌡️ ' + ((value * 9/5) + 32).toFixed(1) + ' °F';
+            else if (type === 'length') result = '📏 ' + (value / 2.54).toFixed(2) + ' pollici';
+            else if (type === 'weight') result = '⚖️ ' + (value * 2.20462).toFixed(2) + ' libbre';
+            else if (type === 'dist') result = '🛣️ ' + (value * 0.621371).toFixed(2) + ' miglia';
+            document.getElementById('unitResult').textContent = result;
+        }
+
+        window.addEventListener('load', function() {
+            loadShoppingList();
+            updateTimerDisplay();
+            setTimeout(generatePassword, 500);
+        });
+
+        document.getElementById('passLength').addEventListener('input', generatePassword);
+        document.getElementById('includeSymbols').addEventListener('change', generatePassword);
+
+        setInterval(function() {
+            if (!isRunning) updateTimerDisplay();
+        }, 1000);
+    </script>
+</body>
+</html>
             <h2>🔒 Privacy Policy</h2>
             <p style="opacity:0.6; font-size:0.85rem;">Ultimo aggiornamento: 15 giugno 2026</p>
             
