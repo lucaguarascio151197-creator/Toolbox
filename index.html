@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolBox - Strumenti Utili Gratis</title>
+    <meta name="description" content="Toolbox gratuito: contatore caratteri, generatore password, timer pomodoro, calcolatore percentuali, lista della spesa. Tutto in un'unica pagina!">
+    
+    <!-- Google AdSense (sostituisci con il tuo codice cliente) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TUO-CODICE-CLIENTE" crossorigin="anonymous"></script> -->
+    
+    <style>
+        :root {
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --accent: #6c63ff;
+            --accent2: #ff6584;
+            --text: #e0e0e0;
+            --border: #2a2a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            background: linear-gradient(45deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            opacity: 0.7;
+            font-size: 0.95rem;
+        }
+
+        /* ADS SPACE */
+        .ad-banner {
+            background: var(--card);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 728px;
+            font-size: 0.85rem;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .ad-banner:hover {
+            border-color: var(--accent);
+            opacity: 0.8;
+        }
+
+        /* GRIGLIA TOOL */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* CARD TOOL */
+        .tool-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(108, 99, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .tool-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .tool-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .tool-card p {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* ELEMENTI COMUNI */
+        textarea, input[type="text"], input[type="number"] {
+            width: 100%;
+            background: #0f0f1a;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--accent), #8b83ff);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        button.secondary {
+            background: var(--border);
+        }
+
+        .result {
+            background: #0f0f1a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            word-break: break-all;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .stat-badge {
+            background: var(--border);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .stat-badge span {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* TIMER */
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            color: var(--accent2);
+            text-shadow: 0 0 30px rgba(255, 101, 132, 0.3);
+            letter-spacing: 5px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .timer-preset {
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .timer-preset:hover, .timer-preset.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* SHOPPING LIST */
+        .shopping-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #0f0f1a;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+
+        .shopping-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .shopping-item label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .shopping-item input:checked + label {
+            text-decoration: line-through;
+            opacity: 0.4;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: #ff4757;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0 5px;
+            margin: 0;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+            box-shadow: none;
+        }
+
+        /* MODALE PRIVACY */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            margin: 20px 0;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 10px;
+            float: right;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            margin: -10px -10px 0 0;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #ff4757;
+            transform: rotate(90deg);
+            box-shadow: none;
+        }
+
+        .modal-content h2 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .modal-content h3 {
+            color: white;
+            margin: 25px 0 10px;
+            font-size: 1.1rem;
+        }
+
+        .modal-content p, .modal-content li {
+            opacity: 0.8;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .modal-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .modal-content .highlight-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px;
+            opacity: 0.5;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .timer-display {
+                font-size: 3rem;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 10px 0;
+            }
+        }
+
+        /* UTILITY */
+        .copied {
+            animation: copyPulse 0.5s ease;
+        }
+
+        @keyframes copyPulse {
+            0%, 100% { background: #0f0f1a; }
+            50% { background: rgba(108, 99, 255, 0.3); }
+        }
+
+        .copy-btn {
+            background: var(--border);
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            margin-top: 0;
+            margin-left: 10px;
+        }
+
+        select {
+            width: 100%;
+            background: #0f0f1a;
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>🧰 ToolBox</h1>
+        <p>Tutti gli strumenti che ti servono, gratis e senza pubblicità invasiva</p>
+    </header>
+
+    <!-- SPAZIO PUBBLICITARIO -->
+    <div class="ad-banner">
+        📢 Qui puoi inserire Google AdSense &middot; Spazio banner 728×90
+    </div>
+
+    <!-- GRIGLIA TOOL -->
+    <div class="tools-grid">
+
+        <!-- TOOL 1: CONTATORE CARATTERI/PAROLE -->
+        <div class="tool-card">
+            <div class="tool-icon">📝</div>
+            <h2>Contatore Caratteri & Parole</h2>
+            <p>Ideale per social media, SEO e copywriting. Conta caratteri, parole, frasi e tempo di lettura.</p>
+            <textarea id="charInput" placeholder="Incolla o scrivi il tuo testo qui..." oninput="countChars()"></textarea>
+            <div class="stats" id="charStats">
+                <div class="stat-badge">Caratteri: <span id="charCount">0</span></div>
+                <div class="stat-badge">Parole: <span id="wordCount">0</span></div>
+                <div class="stat-badge">Frasi: <span id="sentenceCount">0</span></div>
+                <div class="stat-badge">Lettura: <span id="readTime">0</span> min</div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:10px;">
+                <button onclick="copyText('charInput')">📋 Copia testo</button>
+                <button class="secondary" onclick="clearText('charInput')">🗑️ Pulisci</button>
+            </div>
+        </div>
+
+        <!-- TOOL 2: GENERATORE PASSWORD -->
+        <div class="tool-card">
+            <div class="tool-icon">🔐</div>
+            <h2>Generatore Password Sicure</h2>
+            <p>Crea password robuste in un clic. Personalizza lunghezza e complessità.</p>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <label style="font-size:0.85rem;">Lunghezza:</label>
+                <input type="number" id="passLength" value="16" min="6" max="64" style="width:70px;">
+                <label style="font-size:0.85rem; display:flex; align-items:center; gap:5px;">
+                    <input type="checkbox" id="includeSymbols" checked> Simboli
+                </label>
+            </div>
+            <div class="result" id="passwordResult">Clicca "Genera" 👇</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button onclick="generatePassword()">🎲 Genera</button>
+                <button class="copy-btn" onclick="copyPassword()">📋 Copia</button>
+            </div>
+            <div style="margin-top:10px;">
+                <small style="opacity:0.5;">Forza password: </small>
+                <span id="passStrength" style="font-weight:bold;">-</span>
+                <div style="background:var(--border); height:6px; border-radius:3px; margin-top:5px; overflow:hidden;">
+                    <div id="strengthBar" style="height:100%; width:0%; background:var(--accent); transition:all 0.3s; border-radius:3px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOOL 3: CALCOLATORE PERCENTUALI -->
+        <div class="tool-card">
+            <div class="tool-icon">📊</div>
+            <h2>Calcolatore Percentuali</h2>
+            <p>Calcola sconti, IVA, mance, variazioni percentuali. Perfetto per lo shopping!</p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input type="number" id="percentValue" placeholder="Numero (es. 200)" style="flex:1; min-width:100px;">
+                <input type="number" id="percentAmount" placeholder="% (es. 15)" style="flex:1; min-width:100px;">
+            </div>
+            <button onclick="calculatePercent()" style="width:100%;">🔢 Calcola</button>
+            <div class="result" id="percentResult">Risultato qui</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:5px;">
+                <button class="timer-preset" onclick="quickPercent(22)">IVA 22%</button>
+                <button class="timer-preset" onclick="quickPercent(10)">Mancia 10%</button>
+                <button class="timer-preset" onclick="quickPercent(20)">Sconto 20%</button>
+            </div>
+        </div>
+
+        <!-- TOOL 4: TIMER POMODORO -->
+        <div class="tool-card">
+            <div class="tool-icon">🍅</div>
+            <h2>Timer Pomodoro</h2>
+            <p>Tecnica del pomodoro: 25 minuti di focus, 5 di pausa. La produttività non è mai stata così facile.</p>
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-controls">
+                <button class="timer-preset active" onclick="setTimer(25)">🍅 25 min</button>
+                <button class="timer-preset" onclick="setTimer(5)">☕ 5 min</button>
+                <button class="timer-preset" onclick="setTimer(15)">⏱️ 15 min</button>
+                <button class="timer-preset" onclick="setTimer(45)">🔥 45 min</button>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+                <button id="timerStartBtn" onclick="toggleTimer()">▶️ Start</button>
+                <button class="secondary" onclick="resetTimer()">🔄 Reset</button>
+            </div>
+            <p id="timerStatus" style="text-align:center; margin-top:10px; opacity:0.6;">Pronto a partire!</p>
+        </div>
+
+        <!-- TOOL 5: LISTA DELLA SPESA -->
+        <div class="tool-card">
+            <div class="tool-icon">🛒</div>
+            <h2>Lista della Spesa Smart</h2>
+            <p>Aggiungi, spunta e cancella. La lista rimane salvata nel browser (tornando la ritrovi!).</p>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="shoppingInput" placeholder="Aggiungi un prodotto..." onkeypress="if(event.key==='Enter') addShoppingItem()">
+                <button onclick="addShoppingItem()" style="margin-top:0;">➕</button>
+            </div>
+            <div id="shoppingList" style="margin-top:15px; max-height:250px; overflow-y:auto;">
+                <!-- Items generati dinamicamente -->
+            </div>
+            <button class="secondary" onclick="clearShoppingList()" style="width:100%; margin-top:15px;">🗑️ Svuota lista</button>
+        </div>
+
+        <!-- TOOL 6: CONVERTITORE UNITÀ -->
+        <div class="tool-card">
+            <div class="tool-icon">🔄</div>
+            <h2>Convertitore Unità</h2>
+            <p>Converti tra le unità più comuni: temperatura, lunghezza, peso, valuta (approssimativo).</p>
+            <select id="conversionType" onchange="convertUnit()">
+                <option value="temp">🌡️ Temperatura (°C ↔ °F)</option>
+                <option value="length">📏 Lunghezza (cm ↔ pollici)</option>
+                <option value="weight">⚖️ Peso (kg ↔ libbre)</option>
+                <option value="dist">🛣️ Distanza (km ↔ miglia)</option>
+            </select>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <input type="number" id="unitInput" placeholder="Valore" oninput="convertUnit()" style="flex:1;">
+                <span style="font-size:1.5rem;">→</span>
+                <div class="result" id="unitResult" style="flex:1; margin-top:0;">-</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECONDO SPAZIO ADS -->
+    <div class="ad-banner" style="max-width:728px; margin:30px auto;">
+        📢 Spazio per secondo banner AdSense o link affiliato Amazon
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>🧰 <strong>ToolBox</strong> — Strumenti gratuiti per tutti</p>
+        <p>
+            <a onclick="openPrivacy()">🔒 Privacy Policy</a> | 
+            <a href="mailto:lucaguarascio151197@gmail.com">📧 Contatti</a>
+        </p>
+        <p style="margin-top:5px;">💡 Monetizza con AdSense, link affiliati o una donazione "Offrimi un caffè"</p>
+    </footer>
+
+    <!-- ==================== MODALE PRIVACY POLICY ==================== -->
+    <div class="modal-overlay" id="privacyModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePrivacy()">✕</button>
+            
+            <h2>🔒 Privacy Policy</h2>
+            <p style="opacity:0.6; font-size:0.85rem;">Ultimo aggiornamento: 15 giugno 2026</p>
+            
+            <div class="highlight-box">
+                <p><strong>📌 In sintesi:</strong> Non raccogliamo attivamente dati personali. Il sito funziona interamente nel tuo browser. Alcuni servizi di terze parti (Google AdSense) potrebbero utilizzare cookie per mostrare annunci pertinenti.</p>
+            </div>
+
+            <h3>1. Dati che NON raccogliamo</h3>
+            <p>ToolBox <strong>non raccoglie, non memorizza e non trasmette</strong> a server esterni:</p>
+            <ul>
+                <li>Nomi, email, password o dati anagrafici</li>
+                <li>Testi che inserisci nel contatore caratteri</li>
+                <li>Password generate (vengono create localmente nel tuo browser)</li>
+                <li>Dati inseriti nel calcolatore percentuali</li>
+                <li>Contenuti della lista della spesa</li>
+                <li>Valori inseriti nel convertitore unità</li>
+            </ul>
+            <p><strong>Tutti gli strumenti funzionano al 100% lato client (JavaScript nel browser).</strong> Nessun dato viene inviato a server remoti.</p>
+
+            <h3>2. Dati salvati localmente (LocalStorage)</h3>
+            <p>L'unico dato che il sito salva è la <strong>lista della spesa</strong>, che viene memorizzata nella memoria locale del tuo browser (LocalStorage) per comodità d'uso. Questi dati:</p>
+            <ul>
+                <li>Restano <strong>esclusivamente sul tuo dispositivo</strong></li>
+                <li>Non vengono mai inviati a server esterni</li>
+                <li>Possono essere cancellati in qualsiasi momento cliccando "Svuota lista"</li>
+                <li>Vengono rimossi automaticamente se cancelli i dati di navigazione del browser</li>
+            </ul>
+
+            <h3>3. Cookie e servizi di terze parti</h3>
+            <p><strong>3.1 Google AdSense:</strong> Questo sito utilizza Google AdSense per mostrare annunci pubblicitari. Google può utilizzare cookie per mostrare annunci pertinenti e limitare il numero di volte che vedi un annuncio. Puoi disattivare la pubblicità personalizzata visitando le <a href="https://adssettings.google.com" target="_blank" rel="noopener">Impostazioni annunci di Google</a>. Per maggiori informazioni: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Privacy Policy di Google</a>.</p>
+            <p><strong>3.2 Cookie tecnici:</strong> Il sito non utilizza cookie tecnici propri. L'unico meccanismo di salvataggio è il LocalStorage per la lista della spesa.</p>
+            <p><strong>3.3 Nessun tracciamento analitico:</strong> Non utilizziamo Google Analytics, Facebook Pixel o altri strumenti di tracciamento.</p>
+
+            <h3>4. Link di affiliazione</h3>
+            <p>Alcuni link presenti sul sito potrebbero essere link di affiliazione Amazon o di altri programmi. Se clicchi su questi link e acquisti un prodotto, potremmo ricevere una piccola commissione, senza alcun costo aggiuntivo per te.</p>
+
+            <h3>5. Consenso e gestione cookie</h3>
+            <p>Puoi in qualsiasi momento rifiutare i cookie non essenziali, cancellare i cookie dalle impostazioni del browser, o utilizzare il sito in modalità incognita.</p>
+
+            <h3>6. Sicurezza</h3>
+            <p>Poiché il sito non trasmette dati personali a server esterni, il rischio di violazione dei dati è estremamente ridotto. Il sito è ospitato su piattaforme sicure che utilizzano crittografia HTTPS.</p>
+
+            <h3>7. Minori</h3>
+            <p>Il sito non è destinato a minori di 13 anni e non raccoglie consapevolmente dati da minori.</p>
+
+            <h3>8. Diritti dell'utente (GDPR)</h3>
+            <p>In conformità con il GDPR (Regolamento UE 2016/679), hai il diritto di accedere, rettificare, cancellare e limitare il trattamento dei tuoi dati personali. Poiché non raccogliamo attivamente dati personali, l'esercizio di questi diritti è semplificato.</p>
+
+            <h3>9. Contatti</h3>
+            <div class="highlight-box">
+                <p>📧 <strong>Email:</strong> <a href="mailto:lucaguarascio151197@gmail.com">lucaguarascio151197@gmail.com</a></p>
+                <p>💬 <strong>Tempo di risposta:</strong> entro 48 ore</p>
+            </div>
+
+            <h3>10. Modifiche a questa policy</h3>
+            <p>Questa privacy policy può essere aggiornata in futuro. La data di ultimo aggiornamento è sempre indicata in cima alla pagina.</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== MODALE PRIVACY ====================
+        function openPrivacy() {
+            document.getElementById('privacyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePrivacy() {
+            document.getElementById('privacyModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Chiudi modale cliccando fuori
+        document.getElementById('privacyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePrivacy();
+            }
+        });
+
+        // Chiudi modale con tasto ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('privacyModal').classList.contains('active')) {
+                closePrivacy();
+            }
+        });
+
+        // ==================== CONTATORE CARATTERI ====================
+        function countChars() {
+            const text = document.getElementById('charInput').value;
+            document.getElementById('charCount').textContent = text.length;
+            document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            document.getElementById('sentenceCount').textContent = sentences.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('readTime').textContent = Math.ceil(words / 200);
+        }
+
+        function copyText(elementId) {
+            const el = document.getElementById(elementId);
+            el.select();
+            document.execCommand('copy');
+            el.classList.add('copied');
+            setTimeout(() => el.classList.remove('copied'), 500);
+        }
+
+        function clearText(elementId) {
+            document.getElementById(elementId).value = '';
+            countChars();
+        }
+
+        // ==================== GENERATORE PASSWORD ====================
+        function generatePassword() {
+            const length = parseInt(document.getElementById('passLength').value) || 16;
+            const includeSymbols = document.getElementById('includeSymbols').checked;
+            
+            const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let chars = letters + numbers;
+            if (includeSymbols) chars += symbols;
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            document.getElementById('passwordResult').textContent = password;
+            updatePasswordStrength(password);
+        }
+
+        function updatePasswordStrength(password) {
+            let score = 0;
+            if (password.length >= 12) score += 2;
+            else if (password.length >= 8) score += 1;
+            if (/[A-Z]/.test(password)) score += 1;
+            if (/[a-z]/.test(password)) score += 1;
+            if (/[0-9]/.test(password)) score += 1;
+            if (/[^A-Za-z0-9]/.test(password)) score += 2;
+            
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('passStrength');
+            
+            if (score <= 2) {
+                strengthBar.style.width = '25%';
+                strengthBar.style.background = '#ff4757';
+                strengthText.textContent = 'Debole';
+                strengthText.style.color = '#ff4757';
+            } else if (score <= 4) {
+                strengthBar.style.width = '50%';
+                strengthBar.style.background = '#ffa502';
+                strengthText.textContent = 'Media';
+                strengthText.style.color = '#ffa502';
+            } else if (score <= 6) {
+                strengthBar.style.width = '75%';
+                strengthBar.style.background = '#7bed9f';
+                strengthText.textContent = 'Forte';
+                strengthText.style.color = '#7bed9f';
+            } else {
+                strengthBar.style.width = '100%';
+                strengthBar.style.background = '#2ed573';
+                strengthText.textContent = 'Molto Forte';
+                strengthText.style.color = '#2ed573';
+            }
+        }
+
+        function copyPassword() {
+            const pass = document.getElementById('passwordResult').textContent;
+            if (pass && pass !== 'Clicca "Genera" 👇') {
+                navigator.clipboard.writeText(pass).then(() => {
+                    const resultEl = document.getElementById('passwordResult');
+                    resultEl.textContent = '✅ Copiata!';
+                    setTimeout(() => {
+                        resultEl.textContent = pass;
+                    }, 1500);
+                });
+            }
+        }
+
+        // ==================== CALCOLATORE PERCENTUALI ====================
+        function calculatePercent() {
+            const value = parseFloat(document.getElementById('percentValue').value);
+            const percent = parseFloat(document.getElementById('percentAmount').value);
+            
+            if (isNaN(value) || isNaN(percent)) {
+                document.getElementById('percentResult').textContent = 'Inserisci entrambi i valori';
+                return;
+            }
+            
+            const result = (value * percent) / 100;
+            const total = value + result;
+            const discounted = value - result;
+            
+            document.getElementById('percentResult').innerHTML = `
+                ${percent}% di ${value} = <strong>${result.toFixed(2)}</strong><br>
+                <small>+${percent}% = ${total.toFixed(2)} | -${percent}% = ${discounted.toFixed(2)}</small>
+            `;
+        }
+
+        function quickPercent(pct) {
+            document.getElementById('percentAmount').value = pct;
+            calculatePercent();
+        }
+
+        // ==================== TIMER POMODORO ====================
+        let timerInterval;
+        let timerSeconds = 25 * 60;
+        let isRunning = false;
+
+        function setTimer(minutes) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timerSeconds = minutes * 60;
+            document.getElementById('timerStartBtn').textContent = '▶️ Start';
+            document.getElementById('timerStatus').textContent = 'Pronto!';
+            document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            updateTimerDisplay();
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                document.getElementById('timerStartBtn').textContent = '▶️ Riprendi';
+                document.getElementById('timerStatus').textContent = '⏸️ In pausa';
+            } else {
+                if (timerSeconds <= 0) {
+                    timerSeconds = 25 * 60;
+                }
+                isRunning = true;
+                document.getElementById('timerStartBtn').textContent = '⏸️ Pausa';
+                document.getElementById('timerStatus').textContent = '⏳ In corso...';
+                
+                timer
